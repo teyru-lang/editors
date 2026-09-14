@@ -188,5 +188,198 @@
       "import ${1:java.util.List}"
     ],
     "description": "Import declaration"
+  },
+  "Spring application": {
+    "prefix": "springapp",
+    "body": [
+      "import teyru.*",
+      "",
+      "class ${1:Main} {",
+      "\tpublic static void main(String[] args) {",
+      "\t\tSpringApplication.run(${1:Main}.class, args)",
+      "\t}",
+      "}"
+    ],
+    "description": "Spring Boot entry point: settings from application.properties, then --key=value"
+  },
+  "Application context": {
+    "prefix": "context",
+    "body": [
+      "ApplicationContext ctx = new ApplicationContext()",
+      "SpringApplication.loadConfig(ctx, ${1:new String[] { }})",
+      "ctx.refresh()",
+      "MockServer server = new MockServer(ctx)",
+      "$0"
+    ],
+    "description": "A context, its settings, and a MockServer that answers without a socket"
+  },
+  "REST controller": {
+    "prefix": "controller",
+    "body": [
+      "@RestController",
+      "@RequestMapping(\"/${1:pets}\")",
+      "class ${2:PetsController} {",
+      "\t@GetMapping(\"/{id}\")",
+      "\tpublic String one(@PathVariable(\"id\") int id) {",
+      "\t\treturn \"id=\" + id",
+      "\t}",
+      "}"
+    ],
+    "description": "Controller with one route; a handler can also take HttpRequest"
+  },
+  "Route with the request": {
+    "prefix": "route",
+    "body": [
+      "\t@GetMapping(\"/${1:path}\")",
+      "\tpublic String ${2:handle}(HttpRequest req) {",
+      "\t\treturn ${3:\"ok\"}",
+      "\t}"
+    ],
+    "description": "A parameter of type HttpRequest is the request, whatever it is named"
+  },
+  "Route with a JSON body": {
+    "prefix": "postjson",
+    "body": [
+      "\t@PostMapping(\"${1:}\")",
+      "\tpublic ResponseEntity ${2:create}(@RequestBody ${3:String} body) {",
+      "\t\treturn ResponseEntity.of(201, body)",
+      "\t}"
+    ],
+    "description": "@RequestBody binds by the Gson binding: a String takes the body as it arrived"
+  },
+  "Bean with a dependency": {
+    "prefix": "bean",
+    "body": [
+      "@Service",
+      "class ${1:PetStore} {",
+      "\t@Autowired ${2:Database} db",
+      "",
+      "\tpublic String ${3:find}(int id) {",
+      "\t\treturn ${4:\"\"}",
+      "\t}",
+      "}"
+    ],
+    "description": "@Service registers it in the container, @Autowired injects it"
+  },
+  "Settings class": {
+    "prefix": "settings",
+    "body": [
+      "@ConfigurationProperties(prefix = \"${1:app}\")",
+      "@Service",
+      "class ${2:Settings} {",
+      "\tpublic String ${3:name} = \"\"",
+      "\tpublic int ${4:maxSize} = 0",
+      "}"
+    ],
+    "description": "Bound from app.name / app.max-size: the key match is relaxed"
+  },
+  "Bean under a profile": {
+    "prefix": "profile",
+    "body": [
+      "@Profile(\"${1:prod}\")",
+      "@Service",
+      "class ${2:ProdOnly} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Built only under --spring.profiles.active=${1:prod}"
+  },
+  "PreDestroy": {
+    "prefix": "predestroy",
+    "body": [
+      "\t@PreDestroy",
+      "\tpublic void ${1:shutdown}() {",
+      "\t\t$0",
+      "\t}"
+    ],
+    "description": "Runs when ctx.close() is called"
+  },
+  "Exception handler advice": {
+    "prefix": "advice",
+    "body": [
+      "@ControllerAdvice",
+      "class ${1:Errors} {",
+      "\t@ExceptionHandler(${2:Exception}.class)",
+      "\tpublic HttpResponse ${3:handle}(${2:Exception} e) {",
+      "\t\tHttpResponse res = new HttpResponse()",
+      "\t\tres.status = 409",
+      "\t\tres.body = e.getMessage()",
+      "\t\treturn res",
+      "\t}",
+      "}"
+    ],
+    "description": "Answers what a controller throws, matched by the exception's class"
+  },
+  "Interceptor": {
+    "prefix": "interceptor",
+    "body": [
+      "@Service",
+      "class ${1:Audit} implements HandlerInterceptor {",
+      "\tpublic boolean preHandle(HttpRequest req) {",
+      "\t\treturn true",
+      "\t}",
+      "",
+      "\tpublic void afterCompletion(HttpRequest req, HttpResponse res) {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "preHandle answering false is a 403; afterCompletion sees the final response"
+  },
+  "WebSocket handler": {
+    "prefix": "ws",
+    "body": [
+      "@WebSocketMapping(\"/${1:chat}\")",
+      "class ${2:ChatSocket} implements WebSocketHandler {",
+      "\tpublic void onOpen(WebSocketSession session) {",
+      "\t}",
+      "",
+      "\tpublic void onMessage(WebSocketSession session, String text) {",
+      "\t\t$0",
+      "\t}",
+      "",
+      "\tpublic void onBinary(WebSocketSession session, byte[] data) {",
+      "\t}",
+      "",
+      "\tpublic void onClose(WebSocketSession session) {",
+      "\t}",
+      "}"
+    ],
+    "description": "A WebSocket declared the way a route is; the handler may be a bean"
+  },
+  "Session": {
+    "prefix": "session",
+    "body": [
+      "HttpSession s = Sessions.of(req)",
+      "s.setAttribute(\"${1:user}\", ${2:value})",
+      "$0",
+      "return \"hello \" + s.getString(\"${1:user}\")"
+    ],
+    "description": "The cookie is stamped on the answer by the server; find(req) looks up without creating"
+  },
+  "ResponseEntity": {
+    "prefix": "entity",
+    "body": [
+      "ResponseEntity.of(${1:200}, ${2:body}).header(\"${3:Location}\", \"${4:/pets/8}\")"
+    ],
+    "description": "A status, a body and headers in one value"
+  },
+  "HTTP client call": {
+    "prefix": "http",
+    "body": [
+      "HttpClientResponse res = Http.get(\"${1:http://localhost:8080/pets}\")",
+      "System.out.println(res.status + \" \" + res.body)"
+    ],
+    "description": "Http.get / post / postJson / putJson / delete / head; no TLS yet"
+  },
+  "Web settings": {
+    "prefix": "websettings",
+    "body": [
+      "spring.web.enabled=${1:true}",
+      "spring.web.static=${2:public}",
+      "spring.web.cors=${3:http://localhost:3000}",
+      "spring.profiles.active=${4:prod}"
+    ],
+    "description": "application.properties keys the web layer reads"
   }
 }
