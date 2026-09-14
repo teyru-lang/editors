@@ -1,0 +1,39 @@
+<!-- Plugin configuration.  https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>dev.teyru.idea</id>
+    <name>Teyru</name>
+    <vendor url="https://github.com/teyru-lang">teyru-lang</vendor>
+
+    <description><![CDATA[
+        <p>Teyru support for <code>.teyru</code> source files: the file type, and
+        syntax highlighting from the same grammar the language's other editors
+        use.</p>
+        <ul>
+            <li><code>.teyru</code> files open as Teyru files, with the comments,
+                brackets and indentation the language uses.</li>
+            <li>Highlighting is lexical. The Teyru compiler has no language server,
+                so there is no completion, navigation, rename, formatting or
+                diagnostics here either.</li>
+        </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <!-- Highlighting is the TextMate engine's; the plugin does not work without it. -->
+    <depends>org.jetbrains.plugins.textmate</depends>
+
+    <idea-version since-build="262" until-build="262.*"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Teyru" language="Teyru"
+                  implementationClass="dev.teyru.idea.TeyruFileType"
+                  fieldName="INSTANCE"
+                  extensions="teyru"/>
+
+        <lang.syntaxHighlighterFactory language="Teyru"
+                                       implementationClass="org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateSyntaxHighlighterFactory"/>
+        <editorHighlighterProvider filetype="Teyru"
+                                   implementationClass="org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateEditorHighlighterProvider"/>
+
+        <textmate.bundleProvider implementation="dev.teyru.idea.TeyruTextMateBundleProvider"/>
+    </extensions>
+</idea-plugin>

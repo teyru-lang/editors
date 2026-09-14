@@ -1,0 +1,28 @@
+{
+  "name": "teyru",
+  "displayName": "Teyru",
+  "description": "The Teyru grammar, for the TextMate engine of the JetBrains IDEs.",
+  "version": "0.1.0",
+  "contributes": {
+    "languages": [
+      {
+        "id": "teyru",
+        "aliases": [
+          "Teyru",
+          "teyru"
+        ],
+        "extensions": [
+          ".teyru"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "teyru",
+        "scopeName": "source.teyru",
+        "path": "./teyru.tmLanguage.json"
+      }
+    ]
+  }
+}
