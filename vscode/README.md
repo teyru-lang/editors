@@ -1,7 +1,7 @@
 # Teyru for VS Code
 
-Syntax highlighting, brackets and snippets for the [Teyru](../..) language —
-the Java-like language whose compiler lives in this repository.
+Syntax highlighting, brackets and snippets for the [Teyru](https://github.com/teyru-lang/Teyru)
+language — the Java-like language whose compiler lives in that repository.
 
 Teyru source files use the `.teyru` extension.
 

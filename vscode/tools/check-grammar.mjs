@@ -5,8 +5,10 @@
 //
 //     node tools/check-grammar.mjs
 //
-// It reads the compiler in this repository, so it only works from a checkout.
-// Dependency-free: plain Node, nothing installed.
+// It reads the compiler and the end-to-end suite, which live in their own
+// repositories: point TEYRU_COMPILER and TEYRU_TESTS at checkouts of
+// <https://github.com/teyru-lang/Teyru> and <https://github.com/teyru-lang/tests>,
+// or clone them as siblings of this repository. Dependency-free: plain Node.
 //
 // What it checks:
 //
@@ -37,14 +39,38 @@ import { fileURLToPath } from 'node:url'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const extRoot = path.resolve(here, '..')
-const repoRoot = path.resolve(extRoot, '..', '..')
+const siblings = path.resolve(extRoot, '..', '..')
+
+const compilerRoot = process.env.TEYRU_COMPILER
+  ? path.resolve(process.env.TEYRU_COMPILER)
+  : path.join(siblings, 'Teyru')
+const testsRoot = process.env.TEYRU_TESTS
+  ? path.resolve(process.env.TEYRU_TESTS)
+  : path.join(siblings, 'tests')
 
 const GRAMMAR_PATH = path.join(extRoot, 'syntaxes', 'teyru.tmLanguage.json')
-const LEXER_PATH = path.join(repoRoot, 'internal', 'lexer', 'lexer.go')
+const LEXER_PATH = path.join(compilerRoot, 'internal', 'lexer', 'lexer.go')
 const PROGRAM_DIRS = [
-  path.join(repoRoot, 'tests', 'programs'),
-  path.join(repoRoot, 'lib'),
+  path.join(testsRoot, 'programs'),
+  path.join(compilerRoot, 'lib'),
 ]
+
+// display shortens a path for the report. The compiler and the suite are
+// separate checkouts, so neither is "the" repository root any more.
+function display(file) {
+  for (const root of [compilerRoot, testsRoot, extRoot]) {
+    const rel = path.relative(root, file)
+    if (rel && !rel.startsWith('..')) return rel
+  }
+  return file
+}
+
+if (!fs.existsSync(LEXER_PATH)) {
+  console.error(`check-grammar: no compiler at ${LEXER_PATH}`)
+  console.error('  set TEYRU_COMPILER to a checkout of https://github.com/teyru-lang/Teyru')
+  console.error('  and TEYRU_TESTS to a checkout of https://github.com/teyru-lang/tests')
+  process.exit(2)
+}
 
 const failures = []
 const notes = []
@@ -387,7 +413,7 @@ function main() {
   const pat = walkPatterns(grammar)
 
   console.log('== 1. keywords ==')
-  console.log(`lexer table            : ${kw.lexerSet.size} keywords (${path.relative(repoRoot, LEXER_PATH)})`)
+  console.log(`lexer table            : ${kw.lexerSet.size} keywords (${display(LEXER_PATH)})`)
   console.log(`grammar keyword-lexer-*: ${kw.grammarWords.size} words in ${new Set(kw.grammarWords.values()).size} patterns`)
   console.log(`grammar contextual     : ${kw.contextual.size} words in ${new Set(kw.contextual.values()).size} patterns`)
   console.log(`missing from grammar   : ${kw.missing.length ? kw.missing.join(' ') : '(none)'}`)
@@ -414,7 +440,7 @@ function main() {
   const files = programFiles()
   if (files.length === 0) fail('no .teyru programs found to check coverage against')
 
-  const width = Math.max(...files.map(f => path.relative(repoRoot, f).length))
+  const width = Math.max(...files.map(f => display(f).length))
   let sumCovered = 0
   let sumLines = 0
   const worst = []
@@ -424,7 +450,7 @@ function main() {
     const { coveredLines, totalLines, openAtEOF } = scan(text, rules)
     sumCovered += coveredLines
     sumLines += totalLines
-    const rel = path.relative(repoRoot, file)
+    const rel = display(file)
     if (openAtEOF.length) {
       fail(`${rel}: these rules were still open at end of file: ${openAtEOF.join(', ')}`)
     }
