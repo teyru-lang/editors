@@ -1,0 +1,18 @@
+id = "teyru"
+name = "Teyru"
+version = "0.1.0"
+schema_version = 1
+authors = ["LangYa466 <langya466@gmail.com>"]
+description = "Teyru support: syntax highlighting, brackets, outline and comments for .teyru source files."
+repository = "https://github.com/teyru-lang/editors"
+
+# The grammar lives in this repository, in `tree-sitter-teyru/`; `path` is what
+# points Zed at the subdirectory.  The revision is the commit the queries under
+# `languages/teyru/` were written against.
+#
+# There is no `[language_servers]` table: the Teyru compiler has no language
+# server yet, so there is nothing for Zed to start.
+[grammars.teyru]
+repository = "https://github.com/teyru-lang/editors"
+rev = "d3b2f1df92c842e09574b848e76f901e4d4aa57a"
+path = "tree-sitter-teyru"

@@ -1,0 +1,32 @@
+# What Zed needs to know about the language.  Teyru source in the compiler's own
+# `lib/*.teyru` and `tests/programs/*.teyru` is indented with two spaces and no
+# tabs, so that is what the settings below say.
+name = "Teyru"
+grammar = "teyru"
+path_suffixes = ["teyru"]
+line_comments = ["// "]
+# The block and documentation comments of the grammar, in the shape the Java
+# extension for Zed gives them; `///` is a documentation line comment, which
+# `line_comments` does not need a second entry for.
+block_comment = { start = "/*", end = "*/", prefix = "", tab_size = 2 }
+documentation_comment = { start = "/**", end = "*/", prefix = "* ", tab_size = 1 }
+tab_size = 2
+hard_tabs = false
+
+# A bracket is not auto-closed when one of these is typed in front of the
+# cursor.  Teyru has no semicolons, so `;` is not in the list.
+autoclose_before = ":.,=}])>"
+
+# The pairs of vscode/language-configuration.json.
+brackets = [
+  { start = "{", end = "}", close = true, newline = true },
+  { start = "[", end = "]", close = true, newline = true },
+  { start = "(", end = ")", close = true, newline = true },
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string", "comment"] },
+  { start = "'", end = "'", close = true, newline = false, not_in = ["string", "comment"] },
+  { start = "/*", end = " */", close = true, newline = false, not_in = ["string"] },
+]
+
+# The indentation rules of vscode/language-configuration.json.
+increase_indent_pattern = '^.*\{[ \t]*(?://.*)?$'
+decrease_indent_pattern = '^[ \t]*\}'
