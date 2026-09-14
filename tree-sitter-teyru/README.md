@@ -18,7 +18,7 @@ grammar.js            the grammar
 src/parser.c          generated parser (checked in, as tree-sitter expects)
 src/grammar.json      generated
 src/node-types.json   generated
-src/tree_sitter/      tree-sitter's own headers, copied in (MIT, see ../../THIRD-PARTY-NOTICES.md)
+src/tree_sitter/      tree-sitter's own headers, copied in (MIT, see the compiler repo's notices)
 queries/highlights.scm  highlighting, including Teyru's properties and val
 queries/locals.scm      scopes, definitions and references
 queries/indents.scm     what indents, and where
@@ -173,6 +173,10 @@ feature: `basics`, `statements`, `expressions`, `switch`, `patterns`,
 GPL-2.0-only, the license of the Teyru project.  `LICENSE` is a verbatim copy
 of the repository's `LICENSE`: this directory is published as its own package,
 and the GPL asks that a copy of the license travel with a copy of the work.
+
+The notices for the third-party work in this package -- the tree-sitter headers
+under `src/tree_sitter/` -- are kept by the compiler repository, in
+[THIRD-PARTY-NOTICES.md](https://github.com/teyru-lang/Teyru/blob/main/THIRD-PARTY-NOTICES.md).
 
 The grammar was written from the Teyru sources in this repository.  The shape
 of the record-pattern rules (`record_pattern` plus `record_pattern_body`, and

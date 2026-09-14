@@ -18,12 +18,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/teyru-lang/Teyru"
+    "url": "https://github.com/teyru-lang/editors",
+    "directory": "vscode"
   },
   "bugs": {
-    "url": "https://github.com/teyru-lang/Teyru/issues"
+    "url": "https://github.com/teyru-lang/editors/issues"
   },
-  "homepage": "https://github.com/teyru-lang/Teyru",
+  "homepage": "https://github.com/teyru-lang/editors/tree/main/vscode",
   "contributes": {
     "languages": [
       {

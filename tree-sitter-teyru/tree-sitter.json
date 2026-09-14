@@ -28,7 +28,7 @@
       }
     ],
     "links": {
-      "repository": "https://github.com/teyru-lang/Teyru"
+      "repository": "https://github.com/teyru-lang/editors/tree/main/tree-sitter-teyru"
     }
   },
   "bindings": {
