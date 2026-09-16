@@ -1,0 +1,12 @@
+# GitHub's language statistics, twice corrected.
+#
+# tree-sitter's generated parser is 3.5 MB of C that nobody wrote and nobody
+# reads -- it is produced by `tree-sitter generate` from grammar.js -- and it
+# was the largest "language" in this repository by an order of magnitude. The
+# same goes for its two generated JSON companions.
+tree-sitter-teyru/src/parser.c linguist-generated=true
+tree-sitter-teyru/src/grammar.json linguist-generated=true
+tree-sitter-teyru/src/node-types.json linguist-generated=true
+
+# The language the grammar is for.
+*.teyru linguist-language=Teyru
