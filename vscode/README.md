@@ -16,11 +16,14 @@ Teyru source files use the `.teyru` extension.
   - native properties, including the `get` / `set` accessors and the `field` /
     `value` names that are only meaningful inside them
   - `val` / `var`, `native` members, `package teyru`
+  - annotation types: `@interface Name { ... }` reads as a declaration, with
+    `interface` highlighted as the keyword it is, not as the annotation name
   - the Java 25 surface: `record`, `sealed` / `permits` / `non-sealed`, `yield`,
     `when` guards, `_` unnamed variables, text blocks, pattern matching
   - comments, text blocks, string and character escapes, and every numeric
     literal form the lexer has (`0x`, `0b`, leading-`0` octal, `_` separators,
-    `L` / `f` / `F` / `d` / `D` suffixes, exponents)
+    `L` / `f` / `F` / `d` / `D` suffixes, exponents, a leading point like `.5`,
+    and a suffix with no point at all like `1f` and `2d`)
 - **Bracket matching, auto-closing, comments and folding** —
   `language-configuration.json`.
 - **Snippets** for classes, interfaces, records, sealed interfaces, enums (both
@@ -39,6 +42,39 @@ Teyru source files use the `.teyru` extension.
   is lexical only: the editor cannot tell a type name from a variable name, and
   a word that is only contextually a keyword (`record`, `when`, `field`, …) is
   highlighted by shape.
+
+Being lexical, there are places where the grammar cannot be right, and they are
+listed here so that a reader meets them as a known limit rather than as a bug:
+
+- **A statement label is not told apart from anything else that ends in a
+  colon.** `outer:` before a loop and the `LOWER_CASE_WITH_DASHES:` that ends the
+  constants of an enum have the same shape, and the grammar has no scope to
+  choose between them: in both, the colon comes out as
+  `keyword.operator.ternary.teyru`. The name itself is still highlighted, as
+  `constant.other` or as `variable.other` by its case.
+- **A closing angle bracket is only guessed at.** `<` and `>` are scoped as
+  generic delimiters when a type name or a `>` stands before them, which is
+  what the language's own lexer has to do as well (it returns `>>` as two
+  tokens). The consequence is that the end of `Map<String, List<Integer>>`
+  reads as one `keyword.operator.bitwise.teyru` and not as two closers.
+- **`field` and `value` are coloured as builtins wherever they stand alone**,
+  not only inside the accessor block they belong to: a local named `value` in
+  an ordinary method is coloured the same as the `value` of a setter.
+- **`default` inside an `@interface` body is a `keyword.control`**, the same
+  scope a `switch` label uses. The tree-sitter grammar can tell the two apart
+  because it knows which body it is in; a TextMate grammar would need a region
+  around every annotation type to do the same.
+- **An annotation's arguments are not a region of their own.** The name in
+  `@Value("${server.port}")` and the named pairs of `@RequestParam(name = "x")`
+  are highlighted like any other expression, so the `=` is an assignment and
+  the argument name is a `variable.other` rather than a parameter.
+- **A literal that is never closed runs to the end of the file.** An
+  unterminated `"`, `'`, `/*` or `"""` colours everything after it as that
+  literal, because TextMate has no error recovery. The compiler reports the
+  same file with `TY-SYN-0006`, and that diagnostic is the authority.
+- **A text block is one flat string.** Nothing inside it is highlighted further:
+  HTML, JSON or SQL written in a text block is `string.quoted.triple.teyru` from
+  the first line to the last.
 
 ## Build the `.vsix`
 
@@ -93,6 +129,17 @@ It checks three things and exits non-zero if the first two fail:
    identifiers and operators is not supposed to be counted. What *is* a failure
    is a comment, string or character rule still open at end of file — that
    would swallow the rest of the file in an editor too.
+
+That check is a scanner written for this grammar. A stronger one is to run the
+grammar through the tokeniser the editor actually uses — `vscode-textmate` with
+`vscode-oniguruma`, the pair VS Code loads — over every `.teyru` file in the
+compiler repository and its suite, and to fail on any file whose rule stack is
+still deeper than the grammar root at end of file. That is how the brace-less
+`for (...) statement` form was caught: its header stayed open and coloured the
+rest of the file as `meta.control.for`. A second such run compares the grammar's
+`constant.numeric` spans against the tokens `internal/lexer/lexer.go` emits, for
+the literal forms the grammar can get wrong on its own (`.5`, `1f`, `2d`). Both
+need npm, so neither is part of this repository.
 
 ## Status and licence
 

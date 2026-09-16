@@ -41,7 +41,16 @@
           "include": "#number-exponent"
         },
         {
+          "include": "#number-float-suffix"
+        },
+        {
+          "include": "#number-float-leading-dot"
+        },
+        {
           "include": "#number-integer"
+        },
+        {
+          "include": "#annotation-type-declaration"
         },
         {
           "include": "#annotation"
@@ -238,7 +247,7 @@
     },
     "text-block": {
       "name": "string.quoted.triple.teyru",
-      "begin": "\"\"\"[ \\t]*$",
+      "begin": "\"\"\"[ \\t]*(?=\\r?$)",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.teyru"
@@ -332,9 +341,28 @@
       "match": "\\b[0-9][0-9_]*[eE][+-]?[0-9_]+[fFdD]?",
       "name": "constant.numeric.float.teyru"
     },
+    "number-float-suffix": {
+      "match": "\\b[0-9][0-9_]*[fFdD]\\b",
+      "name": "constant.numeric.float.teyru"
+    },
+    "number-float-leading-dot": {
+      "match": "(?<![0-9A-Za-z_$)\\]])\\.[0-9][0-9_]*(?:[eE][+-]?[0-9][0-9_]*)?[fFdD]?",
+      "name": "constant.numeric.float.teyru"
+    },
     "number-integer": {
       "match": "\\b[0-9][0-9_]*[lL]?",
       "name": "constant.numeric.integer.teyru"
+    },
+    "annotation-type-declaration": {
+      "match": "(@)(interface)\\b",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.annotation.teyru"
+        },
+        "2": {
+          "name": "keyword.declaration.teyru"
+        }
+      }
     },
     "annotation": {
       "match": "(@)([A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*)",
@@ -368,7 +396,7 @@
       "name": "entity.name.namespace.teyru"
     },
     "namespace-import": {
-      "match": "(?<=\\bimport[ \\t]+(?:static[ \\t]+)?)[A-Za-z_$][A-Za-z0-9_$.]*(?:\\.\\*)?",
+      "match": "(?<=\\bimport[ \\t]+(?:static[ \\t]+)?)[A-Za-z_$][A-Za-z0-9_$]*(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*(?:\\.\\*)?",
       "name": "entity.name.namespace.teyru"
     },
     "for-header": {
@@ -382,7 +410,7 @@
           "name": "punctuation.section.parens.begin.teyru"
         }
       },
-      "end": "(\\))(?=[ \\t]*(?:\\{|$))",
+      "end": "(\\))",
       "endCaptures": {
         "1": {
           "name": "punctuation.section.parens.end.teyru"
@@ -415,6 +443,12 @@
         },
         {
           "include": "#number-exponent"
+        },
+        {
+          "include": "#number-float-suffix"
+        },
+        {
+          "include": "#number-float-leading-dot"
         },
         {
           "include": "#number-integer"
@@ -575,6 +609,12 @@
         },
         {
           "include": "#number-exponent"
+        },
+        {
+          "include": "#number-float-suffix"
+        },
+        {
+          "include": "#number-float-leading-dot"
         },
         {
           "include": "#number-integer"
