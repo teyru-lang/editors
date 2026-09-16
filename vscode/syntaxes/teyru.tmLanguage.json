@@ -110,6 +110,9 @@
           "include": "#keyword-contextual-underscore"
         },
         {
+          "include": "#generic-end"
+        },
+        {
           "include": "#constant-upper"
         },
         {
@@ -129,9 +132,6 @@
         },
         {
           "include": "#generic-begin"
-        },
-        {
-          "include": "#generic-end"
         },
         {
           "include": "#operator-arrow"
@@ -384,20 +384,43 @@
       }
     },
     "namespace-module": {
-      "match": "(?<=\\bimport[ \\t]+)(module)\\b",
+      "match": "\\b(import)([ \\t]+)(module)\\b(?:(?:[ \\t]+)([A-Za-z_$][A-Za-z0-9_$]*(?:[.-][A-Za-z_$][A-Za-z0-9_$]*)*))?",
       "captures": {
         "1": {
+          "name": "keyword.declaration.teyru"
+        },
+        "3": {
           "name": "keyword.other.module.teyru"
+        },
+        "4": {
+          "name": "entity.name.namespace.teyru"
         }
       }
     },
     "namespace-package": {
-      "match": "(?<=\\bpackage[ \\t]+)[A-Za-z_$][A-Za-z0-9_$.]*",
-      "name": "entity.name.namespace.teyru"
+      "match": "\\b(package)([ \\t]+)([A-Za-z_$][A-Za-z0-9_$.]*)",
+      "captures": {
+        "1": {
+          "name": "keyword.declaration.teyru"
+        },
+        "3": {
+          "name": "entity.name.namespace.teyru"
+        }
+      }
     },
     "namespace-import": {
-      "match": "(?<=\\bimport[ \\t]+(?:static[ \\t]+)?)[A-Za-z_$][A-Za-z0-9_$]*(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*(?:\\.\\*)?",
-      "name": "entity.name.namespace.teyru"
+      "match": "\\b(import)([ \\t]+)(?:(static)([ \\t]+))?([A-Za-z_$][A-Za-z0-9_$]*(?:\\.[A-Za-z_$][A-Za-z0-9_$]*)*(?:\\.\\*)?)",
+      "captures": {
+        "1": {
+          "name": "keyword.declaration.teyru"
+        },
+        "3": {
+          "name": "storage.modifier.teyru"
+        },
+        "5": {
+          "name": "entity.name.namespace.teyru"
+        }
+      }
     },
     "for-header": {
       "name": "meta.control.for.teyru",
@@ -491,6 +514,9 @@
           "include": "#keyword-contextual-underscore"
         },
         {
+          "include": "#generic-end"
+        },
+        {
           "include": "#constant-upper"
         },
         {
@@ -504,9 +530,6 @@
         },
         {
           "include": "#generic-begin"
-        },
-        {
-          "include": "#generic-end"
         },
         {
           "include": "#operator-arrow"
@@ -722,9 +745,21 @@
       }
     },
     "generic-end": {
-      "match": "(?<=(?:\\b[A-Z][A-Za-z0-9_$]*|>))(>)(?![=>])",
+      "match": "\\b([A-Z][A-Z0-9_]{1,})(>)(?![=>])|\\b([A-Z][A-Za-z0-9_$]*)(>)(?![=>])|(?<=>)(>)(?![=>])",
       "captures": {
         "1": {
+          "name": "constant.other.teyru"
+        },
+        "2": {
+          "name": "punctuation.definition.generic.end.teyru"
+        },
+        "3": {
+          "name": "entity.name.type.teyru"
+        },
+        "4": {
+          "name": "punctuation.definition.generic.end.teyru"
+        },
+        "5": {
           "name": "punctuation.definition.generic.end.teyru"
         }
       }

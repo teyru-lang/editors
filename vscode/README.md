@@ -43,6 +43,14 @@ Teyru source files use the `.teyru` extension.
   a word that is only contextually a keyword (`record`, `when`, `field`, …) is
   highlighted by shape.
 
+The patterns are also written to the intersection of what the engines accept.
+Oniguruma and JavaScript (above) are two; the third is PCRE, which is the engine
+Linguist compiles a grammar with to highlight a language on GitHub. PCRE cannot
+look behind an unbounded number of characters, so the `import`, `package`,
+`module` and generic-closing rules consume the word in front of them instead of
+asserting on it, and the rule for a closing `>` is tried before the rules for
+the name it closes. Anything added here has to keep compiling under all three.
+
 Being lexical, there are places where the grammar cannot be right, and they are
 listed here so that a reader meets them as a known limit rather than as a bug:
 
